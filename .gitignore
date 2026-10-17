@@ -1,0 +1,8 @@
+# Data files (download from source, see README)
+*.csv
+
+# Python / Jupyter
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+.venv/
