@@ -49,6 +49,8 @@ Simulating *n* qubits takes 2ⁿ numbers, so the cost doubles with every qubit. 
 | Quantum kernel SVR (6 PCA) | 0.710 | 18.92 |
 | Variational quantum regressor (6 PCA) | 0.628 | 21.44 |
 
+![Predicted vs actual Tc for all five models](results/predicted_vs_actual.png)
+
 ### Averaged over 5 random splits (mean ± std of test R²)
 
 | Qubits | PCA info kept | XGBoost (PCA) | Classical SVR | Quantum kernel SVR | Quantum wins |
@@ -57,13 +59,17 @@ Simulating *n* qubits takes 2ⁿ numbers, so the cost doubles with every qubit. 
 | 6 | 67.6% | 0.642 ± 0.052 | 0.629 ± 0.059 | 0.632 ± 0.073 | 3 / 5 |
 | 8 | 74.2% | 0.665 ± 0.062 | 0.625 ± 0.077 | 0.628 ± 0.086 | 3 / 5 |
 
-**Paired t-test (quantum kernel vs classical SVR, all 15 splits):** mean ΔR² = +0.003, t = 0.83, p = 0.42 → no significant difference.
+**Paired t-test (quantum kernel vs classical SVR, all 15 splits):** mean ΔR² = +0.003, t = 0.87, p = 0.40 → no significant difference.
+
+![Test R² vs number of qubits, averaged over 5 splits](results/r2_vs_qubits.png)
 
 ## Key findings
 
-1. **The quantum kernel performed indistinguishably from the classical RBF kernel.** Across 15 paired splits (4, 6 and 8 qubits × 5 seeds), the mean difference was +0.003 R², far smaller than the split-to-split variation of ±0.06–0.10. The quantum kernel was better in 9 of 15 splits, and a paired t-test found no significant difference (t = 0.83, p = 0.42). The apparent advantage on the single split (0.710 vs 0.690) came from which materials happened to be in the test set.
+1. **The quantum kernel performed indistinguishably from the classical RBF kernel.** Across 15 paired splits (4, 6 and 8 qubits × 5 seeds), the mean difference was +0.003 R², far smaller than the split-to-split variation of ±0.06–0.10. The quantum kernel was better in 9 of 15 splits, and a paired t-test found no significant difference (t = 0.87, p = 0.40). The apparent advantage on the single split (0.710 vs 0.690) came from which materials happened to be in the test set.
 2. **Information lost in PCA compression is the main bottleneck.** Six components keep only about 68% of the variance in the Magpie features. Compression alone drops XGBoost from R² 0.807 to 0.719.
 3. **The variational model underfits.** Its training loss barely decreased, and its predictions are compressed toward the mean. Trainability problems like this (for example, barren plateaus) are a known challenge for variational quantum circuits.
+
+   <img src="results/vqc_learning_curve.png" alt="Variational quantum regressor learning curve" width="420">
 4. **All models struggle with high-Tc materials (above about 60 K)** and under-predict the highest Tc values.
 
 These results agree with the broader observation that quantum kernels tend to match, rather than beat, well-chosen classical kernels on classical tabular data.
